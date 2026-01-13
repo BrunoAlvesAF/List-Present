@@ -221,6 +221,17 @@ export default {
   cursor: pointer;
   font-weight: bold;
 }
+
+input[type=number]{
+  width: 100%; 
+  padding: 12px; 
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+
+}
+
 .filter-header{
   display: flex;
   justify-content: space-between;
