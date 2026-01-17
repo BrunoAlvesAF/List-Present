@@ -28,9 +28,42 @@
           :key="cat.nome"
           :class="['cat-btn', {active: selectedCat === cat.nome }]" 
           @click="selectedCat = cat.nome">
-          <span>{{ cat.icon }}</span> {{ cat.nome }}
+         <span>{{ cat.icon }}</span> {{ cat.nome }}
+        </button>
+
+        <button class="cat-btn pix-special-btn" @click="showPixModal=true">
+          <span class="pix-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="svg-pix">
+        <path d="M306.4 356.5C311.8 351.1 321.1 351.1 326.5 356.5L403.5 433.5C417.7 447.7 436.6 455.5 456.6 455.5L471.7 455.5L374.6 552.6C344.3 582.1 295.1 582.1 264.8 552.6L167.3 455.2L176.6 455.2C196.6 455.2 215.5 447.4 229.7 433.2L306.4 356.5zM326.5 282.9C320.1 288.4 311.9 288.5 306.4 282.9L229.7 206.2C215.5 191.1 196.6 184.2 176.6 184.2L167.3 184.2L264.7 86.8C295.1 56.5 344.3 56.5 374.6 86.8L471.8 183.9L456.6 183.9C436.6 183.9 417.7 191.7 403.5 205.9L326.5 282.9zM176.6 206.7C190.4 206.7 203.1 212.3 213.7 222.1L290.4 298.8C297.6 305.1 307 309.6 316.5 309.6C325.9 309.6 335.3 305.1 342.5 298.8L419.5 221.8C429.3 212.1 442.8 206.5 456.6 206.5L494.3 206.5L552.6 264.8C582.9 295.1 582.9 344.3 552.6 374.6L494.3 432.9L456.6 432.9C442.8 432.9 429.3 427.3 419.5 417.5L342.5 340.5C328.6 326.6 304.3 326.6 290.4 340.6L213.7 417.2C203.1 427 190.4 432.6 176.6 432.6L144.8 432.6L86.8 374.6C56.5 344.3 56.5 295.1 86.8 264.8L144.8 206.7L176.6 206.7z"/>
+      </svg>
+          </span>
+          Pix
         </button>
       </nav>
+
+      <div v-if="showPixModal" class="modal-overlay" @click.self="showPixModal= false">
+        <div class="modal-card">
+          <div class="modal-border">
+             <div class="ornament">✦</div>
+             <header class="modal-header">
+              <h2>Presente Pix</h2>
+              <p>Agradecemos imensamente o carinho!</p>
+             </header>
+            <div class="modal-body">
+              <div class="pix-info">
+                 <div class="pix-qrcode">
+                  <img src="/public/img/image.png" alt="QR CODE" class="pix-img">
+                 </div>
+                <p class="pix-label">CHAVE PIX</p>
+                <p class="pix-key">hellen&bruno@gmail.com</p>
+                <p class="pix-label">NOME</p>
+                <p class="pix-name">Hellen ou Bruno</p>
+              </div>
+            </div>
+            <button @click="showPixModal= false" class="btn-primary">fechar</button>
+          </div>
+        </div>
+      </div>
 
       <div class="products-grid">
         <div v-for="item in filteredProducts" :key="item.id" class="card">
@@ -41,8 +74,13 @@
 
           <div class="card-body">
             <h3>{{ item.titulo }}</h3>
-            <p class="description">{{ item.descricao }}</p>
+          
+          <div class="price-container">
             <div class="price">R$ {{ item.preco }}</div>
+            <span class="price-icon" title="O preço pode sofrer alterações.">i</span>
+          </div>
+            <p class="description">{{ item.descricao }}</p>
+            
             
             <div class="card-footer">
               <div v-if="item.quantidade > 0" class="status-pill">
@@ -80,7 +118,17 @@
           <header class="modal-header">
             <h2>Um Presente Especial</h2>
             <p>Você escolheu presentear com:</p>
+
+            <div class="model-item-title">
             <span class="item-name">{{ itemParaReservar.titulo }}</span>
+             <a v-if="itemParaReservar.link"
+            :href="itemParaReservar.link"
+            target="_blank"
+            class="store-link">
+            <span class="info-icon">i</span>
+            </a>
+            </div>
+          
           </header>
           <div class="modal-body">
             <div class="input-wrapper">
@@ -117,6 +165,7 @@ export default {
       itemParaReservar: null,
       nomeReserva: '',
       toastAtivo: false, 
+      showPixModal: false,
       categorias: [
         { nome: 'Todos os Presentes', icon: '🎁' },
         { nome: 'Cozinha', icon: '🍴' },
@@ -273,8 +322,12 @@ export default {
   .categories { 
     display: flex; 
     gap: 10px; overflow-x: auto; 
-    padding-bottom: 30px; 
-    justify-content: center; 
+    padding-bottom: 5px 20px 20px 20px; 
+    justify-content: flex-start; 
+  }
+
+  .categories::-webkit-scrollbar{
+    display: none;
   }
   .cat-btn { 
     padding: 10px 20px; 
@@ -343,6 +396,15 @@ export default {
     color: var(--dourado-luxo); 
     font-family: 'playfair display', sans-serif;
     font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .price-container{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
   }
 
   .card-footer { 
@@ -468,7 +530,7 @@ export default {
     margin-top: 15px;
    }
 
-  /* TOAST */
+  /*toast*/
   .toast-success { 
     position: fixed; 
     bottom: 20px; 
@@ -507,13 +569,146 @@ export default {
   opacity: 0.8;
 }
 
-/* Container Principal */
+
 .pix-section {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 60px 20px;
-  background-color: #fdfcf8; /* Fundo creme suave da página */
+  background-color: #fdfcf8;
 }
 
+.pix-img{
+  width: 140px;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+/*pix*/
+.pix-special-btn{
+  border-color: #32bcad !important;
+  color: #32bcad !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pix-icon{
+  width: 18px;
+  height: 18px;
+  display: flex;
+}
+.svg-pix{
+  fill: #32bcad;
+}
+.pix-info{
+  background: #f4fbfb;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #32bcad33;
+  text-align: center;
+  margin: 10px 0;
+}
+.pix-label{
+  font-size: 0.7rem;
+  color: #8b7d77;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.pix-key{
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+.pix-name{
+  font-weight: 600;
+  color: #333;
+}
+
+.info-link{
+  text-decoration: none;
+  display: flex;
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--tom-areia);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.info-icon{
+  color: var(--tom-areia);
+  font-family: 'Playfair display' serif;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.info-icon-static{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #d2b4a0; 
+  border-radius: 50%;
+  font-size: 11px;
+  color: #8b7d77;
+  cursor: help;
+  font-style: italic;
+}
+
+.info-link:hover{
+  background-color: var(--tom-areia);
+}
+
+.model-item-title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 15px 0 !important;
+}
+
+.price-icon{
+  background-color: var(--marrom-suave);
+  color: white;
+  border-radius: 100%;
+  width: 18px;
+  align-items: center;
+  justify-content:center;
+  display: flex;
+  font-style: italic; 
+}
+
+.store-link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important; 
+  height: 28px !important;
+  background-color: #d2b4a0;; 
+  border-radius: 50% !important;
+  text-decoration: none !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease;
+}
+
+.store-link .info-icon {
+  color: #ffffff !important; 
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic !important;
+  font-weight: bold !important;
+  font-size: 16px !important; 
+  line-height: 1 !important;
+}
+
+.store-link:hover {
+  transform: scale(1.1);
+}
 </style>
