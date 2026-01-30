@@ -30,12 +30,11 @@
           @click="selectedCat = cat.nome">
          <span>{{ cat.icon }}</span> {{ cat.nome }}
         </button>
-
-        <button class="cat-btn pix-special-btn" @click="showPixModal=true">
+           <button class="cat-btn pix-special-btn" @click="showPixModal=true">
           <span class="pix-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="svg-pix">
-        <path d="M306.4 356.5C311.8 351.1 321.1 351.1 326.5 356.5L403.5 433.5C417.7 447.7 436.6 455.5 456.6 455.5L471.7 455.5L374.6 552.6C344.3 582.1 295.1 582.1 264.8 552.6L167.3 455.2L176.6 455.2C196.6 455.2 215.5 447.4 229.7 433.2L306.4 356.5zM326.5 282.9C320.1 288.4 311.9 288.5 306.4 282.9L229.7 206.2C215.5 191.1 196.6 184.2 176.6 184.2L167.3 184.2L264.7 86.8C295.1 56.5 344.3 56.5 374.6 86.8L471.8 183.9L456.6 183.9C436.6 183.9 417.7 191.7 403.5 205.9L326.5 282.9zM176.6 206.7C190.4 206.7 203.1 212.3 213.7 222.1L290.4 298.8C297.6 305.1 307 309.6 316.5 309.6C325.9 309.6 335.3 305.1 342.5 298.8L419.5 221.8C429.3 212.1 442.8 206.5 456.6 206.5L494.3 206.5L552.6 264.8C582.9 295.1 582.9 344.3 552.6 374.6L494.3 432.9L456.6 432.9C442.8 432.9 429.3 427.3 419.5 417.5L342.5 340.5C328.6 326.6 304.3 326.6 290.4 340.6L213.7 417.2C203.1 427 190.4 432.6 176.6 432.6L144.8 432.6L86.8 374.6C56.5 344.3 56.5 295.1 86.8 264.8L144.8 206.7L176.6 206.7z"/>
-      </svg>
+              <path d="M306.4 356.5C311.8 351.1 321.1 351.1 326.5 356.5L403.5 433.5C417.7 447.7 436.6 455.5 456.6 455.5L471.7 455.5L374.6 552.6C344.3 582.1 295.1 582.1 264.8 552.6L167.3 455.2L176.6 455.2C196.6 455.2 215.5 447.4 229.7 433.2L306.4 356.5zM326.5 282.9C320.1 288.4 311.9 288.5 306.4 282.9L229.7 206.2C215.5 191.1 196.6 184.2 176.6 184.2L167.3 184.2L264.7 86.8C295.1 56.5 344.3 56.5 374.6 86.8L471.8 183.9L456.6 183.9C436.6 183.9 417.7 191.7 403.5 205.9L326.5 282.9zM176.6 206.7C190.4 206.7 203.1 212.3 213.7 222.1L290.4 298.8C297.6 305.1 307 309.6 316.5 309.6C325.9 309.6 335.3 305.1 342.5 298.8L419.5 221.8C429.3 212.1 442.8 206.5 456.6 206.5L494.3 206.5L552.6 264.8C582.9 295.1 582.9 344.3 552.6 374.6L494.3 432.9L456.6 432.9C442.8 432.9 429.3 427.3 419.5 417.5L342.5 340.5C328.6 326.6 304.3 326.6 290.4 340.6L213.7 417.2C203.1 427 190.4 432.6 176.6 432.6L144.8 432.6L86.8 374.6C56.5 344.3 56.5 295.1 86.8 264.8L144.8 206.7L176.6 206.7z"/>
+            </svg>
           </span>
           Pix
         </button>
@@ -74,14 +73,6 @@
 
           <div class="card-body">
             <h3>{{ item.titulo }}</h3>
-          
-          <div class="price-container">
-            <div class="price">R$ {{ item.preco }}</div>
-            <span class="price-icon" title="O preço pode sofrer alterações.">i</span>
-          </div>
-            <p class="description">{{ item.descricao }}</p>
-            
-            
             <div class="card-footer">
               <div v-if="item.quantidade > 0" class="status-pill">
                 <span class="check-icon">✓</span>
@@ -92,24 +83,38 @@
                 <span class="status-text">Esgotado</span>
               </div>
 
-              <button @click="handleReserve(item)" 
-                :disabled="item.quantidade <= 0" 
-                :class="['reserve-btn', {'btn-disabled': item.quantidade <= 0 }]">
-                {{ item.quantidade > 0 ? '🛒 Reservar' : 'Reservado' }}
+              <button class="btn-ver-produto" @click="verDetalhes(item)">
+                <span class="cart-icon">🛒</span>
+                Ver produto
               </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <footer class="footer-dark">
-      <div class="footer-content">
-        <div class="ornament">✦</div>
-        <h3 class="footer-names">Hellen & Bruno</h3>
-        <p>Obrigado por fazer parte do nosso dia especial!</p>
+      <div v-if="showProductModal" class="modal-option">
+        <div class="modal-card">
+          <button class="close-btn" @click="closeModal">✕</button>
+          <div class="image-container">
+            <img :src="productDetail.imagem" :alt="productDetail.titulo" class="product-image">
+          </div>
+          <h2 class="product-title">{{ productDetail.titulo }}</h2>
+
+           <p v-if="productDetail.descricao" class="product-description">
+          {{ productDetail.descricao }}
+           </p>
+
+          <div class="button-group">
+            <a :href="productDetail.link" target="_blank" class="btn btn-link">
+              <span class="icon">🔗</span> Ver na loja
+            </a>
+            <button class="btn btn-reserve" @click="handleReserve(productDetail)">
+              <span class="icon">🛒</span> Reservar presente
+            </button>
+          </div>
+        </div>
       </div>
-    </footer>
+    </div>
 
     <div v-if="showModal" class="modal-overlay">
       <div class="modal-card">
@@ -121,19 +126,13 @@
 
             <div class="model-item-title">
             <span class="item-name">{{ itemParaReservar.titulo }}</span>
-             <a v-if="itemParaReservar.link"
-            :href="itemParaReservar.link"
-            target="_blank"
-            class="store-link">
-            <span class="info-icon">i</span>
-            </a>
             </div>
           
           </header>
           <div class="modal-body">
             <div class="input-wrapper">
               <label>Como devemos te identificar?</label>
-              <input v-model="nomeReserva" type="text" placeholder="Digite seu nome completo">
+              <input v-model="nomeReserva" type="text" placeholder="Digite seu nome">
             </div>
           </div>
           <footer class="modal-footer">
@@ -149,6 +148,14 @@
         ✅ Reserva confirmada com sucesso!
       </div>
     </transition>
+
+    <footer class="footer-dark">
+      <div class="footer-content">
+        <div class="ornament">✦</div>
+        <h3 class="footer-names">Hellen & Bruno</h3>
+        <p>Obrigado por fazer parte do nosso dia especial!</p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -162,7 +169,9 @@ export default {
       selectedCat: 'Todos os Presentes',
       produtos: [],
       showModal: false,
+      showProductModal: false,
       itemParaReservar: null,
+      productDetail: null,
       nomeReserva: '',
       toastAtivo: false, 
       showPixModal: false,
@@ -191,9 +200,18 @@ export default {
     })
   },
   methods: { 
+    verDetalhes(item) {
+      this.productDetail = item;
+      this.showProductModal = true;
+    },
+    closeModal() {
+      this.showProductModal = false;
+      this.productDetail = null;
+    },
     handleReserve(item) {
       this.itemParaReservar = item;
       this.showModal = true;
+      this.showProductModal = false;
     },
     cancelarReserva() {
       this.showModal = false;
@@ -330,6 +348,7 @@ export default {
     display: none;
   }
   .cat-btn { 
+    order: 2;
     padding: 10px 20px; 
     border-radius: 30px; 
     border: 1px solid #eee; 
@@ -453,7 +472,7 @@ export default {
     }
 
 
-  /* MODAL PREMIUM STYLES */
+  /*Modal styles*/
   .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(44, 42, 41, 0.7); backdrop-filter: blur(8px);
@@ -462,7 +481,7 @@ export default {
   .modal-card { 
     background: #fff; 
     width: 100%; 
-    max-width: 480px; 
+    max-width: 420px; 
     padding: 12px; border-radius: 4px; 
     box-shadow: 0 30px 60px rgba(0,0,0,0.3); 
   }
@@ -569,7 +588,7 @@ export default {
   opacity: 0.8;
 }
 
-
+/*pix*/
 .pix-section {
   display: flex;
   justify-content: center;
@@ -586,8 +605,8 @@ export default {
   border: 1px solid #eee;
 }
 
-/*pix*/
 .pix-special-btn{
+  order: 1;
   border-color: #32bcad !important;
   color: #32bcad !important;
   display: flex;
@@ -710,5 +729,256 @@ export default {
 
 .store-link:hover {
   transform: scale(1.1);
+}
+
+/*btn ver produto*/
+.btn-ver-produto{
+  background: #d2b4a0;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/*modal prodcuts*/
+.modal-option {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(44, 42, 41, 0.7); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-option .modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px; 
+  border-radius: 16px;
+  padding: 30px 25px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  border: 2px solid #d2b4a0; 
+  animation: slideUp 0.4s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid #e8e2d9;
+  color: #8b7d77;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: #c5a059;
+  color: white;
+  border-color: #c5a059;
+  transform: rotate(90deg);
+}
+
+.image-container {
+  width: 100%;
+  height: 180px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f7f3;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
+}
+
+.product-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.product-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; 
+  color: #333;
+  text-align: center;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  padding: 0 10px;
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.price {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: #c5a059;
+  font-weight: 600;
+}
+
+.price-container .info-icon {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #c5a059;
+  color: #c5a059;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+  cursor: help;
+  transition: all 0.3s ease;
+}
+
+.price-container .info-icon:hover {
+  background: #c5a059;
+  color: white;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn {
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-link {
+  background-color: #f8f5f0;
+  color: #8b7d77;
+  border: 1.5px solid #e8e2d9;
+}
+
+.btn-link:hover {
+  background-color: #f0ece5;
+  color: #666;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 125, 119, 0.1);
+}
+
+.btn-reserve {
+  background-color: #c5a059; /* Dourado */
+  color: white;
+  border: 1.5px solid #c5a059;
+}
+
+.btn-reserve:hover {
+  background-color: #b38f4e;
+  border-color: #b38f4e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+}
+
+.btn .icon {
+  font-size: 1.1rem;
+}
+
+.product-description {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .modal-option .modal-card {
+    max-width: 90%;
+    padding: 25px 20px;
+  }
+  
+  .image-container {
+    height: 160px;
+  }
+  
+  .product-title {
+    font-size: 1.2rem;
+  }
+  
+  .price {
+    font-size: 1.5rem;
+  }
+  
+  .btn {
+    padding: 13px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Para tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .modal-option .modal-card {
+    max-width: 420px;
+  }
 }
 </style>
