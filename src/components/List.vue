@@ -54,9 +54,9 @@
                   <img src="/public/img/image.png" alt="QR CODE" class="pix-img">
                  </div>
                 <p class="pix-label">CHAVE PIX</p>
-                <p class="pix-key">hellen&bruno@gmail.com</p>
+                <p class="pix-key">88993085560</p>
                 <p class="pix-label">NOME</p>
-                <p class="pix-name">Hellen ou Bruno</p>
+                <p class="pix-name">Bruno Alves de Freitas</p>
               </div>
             </div>
             <button @click="showPixModal= false" class="btn-primary">fechar</button>
@@ -76,7 +76,7 @@
             <div class="card-footer">
               <div v-if="item.quantidade > 0" class="status-pill">
                 <span class="check-icon">✓</span>
-                <span class="status-text">Disponível</span>
+                <span class="status-text">Disponível ({{ item.quantidade }})</span>
               </div>
               <div v-else class="status-pill soldout">
                 <span class="check-icon">✕</span>
