@@ -179,7 +179,8 @@ export default {
         { nome: 'Todos os Presentes', icon: '🎁' },
         { nome: 'Cozinha', icon: '🍴' },
         { nome: 'Quarto', icon: '🛏' },
-        { nome: 'Sala', icon: '🛋' }
+        { nome: 'Sala', icon: '🛋' },
+        { nome: 'Banheiro', icon: '🛁'}
       ]
     }
   },

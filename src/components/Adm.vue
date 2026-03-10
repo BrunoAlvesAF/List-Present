@@ -61,6 +61,7 @@
                   <option value="Cozinha">Cozinha</option>
                   <option value="Quarto">Quarto</option>
                   <option value="Sala">Sala</option>
+                  <option value="Banheiro">Banheiro</option>
                 </select>
               </div>
               <input type="number" v-model.number="novoItem.quantidade" placeholder="Qtd" title="Quantidade inicial" class="line-input narrow" />
@@ -78,6 +79,7 @@
               <option value="Cozinha">Cozinha</option>
               <option value="Quarto">Quarto</option>
               <option value="Sala">Sala</option>
+              <option value="Banheiro">Banheiro</option>
             </select>
           </div>
           
