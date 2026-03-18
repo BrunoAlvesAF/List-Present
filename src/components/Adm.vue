@@ -60,12 +60,11 @@
                 <select v-model="novoItem.categoria" class="line-input">
                   <option value="Cozinha">Cozinha</option>
                   <option value="Quarto">Quarto</option>
-                  <option value="Sala">Sala</option>
                   <option value="Banheiro">Banheiro</option>
+                  <option value="Eletros">Eletros</option>
                 </select>
               </div>
               <input type="number" v-model.number="novoItem.quantidade" placeholder="Qtd" title="Quantidade inicial" class="line-input narrow" />
-              <input type="number" v-model.number="novoItem.preco" placeholder="Preço (R$)" title="Preço do item" class="price-input" />
             </div>
             <button @click="adicionarPresente" class="btn-terracotta">Salvar na Lista</button>
           </div>
@@ -78,8 +77,8 @@
               <option value="Todos">Todas as Categorias</option>
               <option value="Cozinha">Cozinha</option>
               <option value="Quarto">Quarto</option>
-              <option value="Sala">Sala</option>
               <option value="Banheiro">Banheiro</option>
+              <option value="Eletros">Eletros</option>
             </select>
           </div>
           
