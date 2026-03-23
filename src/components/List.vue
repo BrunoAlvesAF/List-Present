@@ -38,6 +38,9 @@
           </span>
           Pix
         </button>
+        <button class="reservado-btn" @click="abrirReservados">
+         Meus Reservados
+        </button>
       </nav>
 
       <div v-if="showPixModal" class="modal-overlay" @click.self="showPixModal= false">
@@ -149,6 +152,50 @@
       </div>
     </transition>
 
+  <!-- Modal de Reservados -->
+    <div v-if="showReservadosModal" class="modal-overlay" @click.self="showReservadosModal = false">
+  <div class="modal-card">
+    <div class="modal-border">
+
+      <div class="ornament">✦</div>
+
+      <header class="modal-header">
+        <h2>Meus Reservados</h2>
+        <p>Seus presentes escolhidos</p>
+      </header>
+
+      <div class="modal-body">
+
+        <div v-if="itensReservados.length === 0" class="empty-state">
+          <p>Você ainda não reservou nenhum presente.</p>
+        </div>
+
+        <div v-for="item in itensReservados" :key="item.id" class="item-reservado">
+          <img :src="item.imagem" class="img-reservado" />
+
+          <div>
+            <p class="nome-item">{{ item.nome }}</p>
+
+            <a :href="item.link" target="_blank" class="btn-link">
+              🔗 Ver produto
+            </a>
+           
+        <button class="btn-remover" @click="removerReservado(item.id)">
+        ✕
+      </button>
+          </div>
+        </div>
+
+      </div>
+
+      <button @click="showReservadosModal = false" class="btn-primary">
+        Fechar
+      </button>
+
+    </div>
+  </div>
+</div>
+
     <footer class="footer-dark">
       <div class="footer-content">
         <div class="ornament">✦</div>
@@ -175,6 +222,9 @@ export default {
       nomeReserva: '',
       toastAtivo: false, 
       showPixModal: false,
+      showReservadosModal: false,
+      itensReservados: [],
+
       categorias: [
         { nome: 'Todos os Presentes', icon: '🎁' },
         { nome: 'Cozinha', icon: '🍴' },
@@ -184,14 +234,20 @@ export default {
       ]
     }
   },
+
   computed: {
     filteredProducts() {
       if (!this.produtos) return [];
       const itensDisponiveis = this.produtos.filter(p => p.quantidade > 0);
-      if (this.selectedCat === 'Todos os Presentes') return itensDisponiveis;
+
+      if (this.selectedCat === 'Todos os Presentes') {
+        return itensDisponiveis;
+      }
+
       return itensDisponiveis.filter(p => p.categoria === this.selectedCat);
     }
   },
+
   mounted() {
     onSnapshot(collection(db, 'presentes'), snapshot => {
       this.produtos = snapshot.docs.map(docSnap => ({
@@ -200,47 +256,101 @@ export default {
       }))
     })
   },
+
   methods: { 
+
     verDetalhes(item) {
       this.productDetail = item;
       this.showProductModal = true;
     },
+
     closeModal() {
       this.showProductModal = false;
       this.productDetail = null;
     },
+
     handleReserve(item) {
       this.itemParaReservar = item;
       this.showModal = true;
       this.showProductModal = false;
     },
+
     cancelarReserva() {
       this.showModal = false;
       this.nomeReserva = '';
     },
+
+    removerReservado(id) {
+  let itens = JSON.parse(localStorage.getItem("reservados")) || [];
+
+  // remove o item pelo id
+  itens = itens.filter(item => item.id !== id);
+
+  localStorage.setItem("reservados", JSON.stringify(itens));
+
+  // atualiza a lista na tela
+  this.itensReservados = itens;
+},
+
+    //LOCALSTORAGE
+    salvarNoLocalStorage(item) {
+      let itens = JSON.parse(localStorage.getItem("reservados")) || [];
+
+      const jaExiste = itens.some(i => i.id === item.id);
+      if (jaExiste) return;
+
+      itens.push({
+        id: item.id,
+        nome: item.titulo,
+        link: item.link,
+        imagem: item.imagem
+      });
+
+      localStorage.setItem("reservados", JSON.stringify(itens));
+    },
+
+    //Modal de Reservados
+    abrirReservados() {
+      const itens = JSON.parse(localStorage.getItem("reservados")) || [];
+      this.itensReservados = itens;
+      this.showReservadosModal = true;
+    },
+
     async confirmarReserva() {
-      if (!this.nomeReserva.trim()) return alert("Por favor, digite seu nome!");
+      if (!this.nomeReserva.trim()) {
+        return alert("Por favor, digite seu nome!");
+      }
       
       try {
         const docRef = doc(db, 'presentes', this.itemParaReservar.id);
+
         await updateDoc(docRef, {
           quantidade: 0, 
           reservadoPor: this.nomeReserva,
           dataReserva: new Date().toISOString()
         });
+
+        // LOCAL
+        this.salvarNoLocalStorage(this.itemParaReservar);
+
         this.cancelarReserva();
         this.mostrarToast(); 
+
       } catch (e) { 
         console.error(e); 
       }
     },
+
     mostrarToast() { 
       this.toastAtivo = true;
-      setTimeout(() => { this.toastAtivo = false; }, 3000);
+      setTimeout(() => { 
+        this.toastAtivo = false; 
+      }, 3000);
     }
   } 
 }
 </script>
+
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap');
@@ -981,5 +1091,75 @@ export default {
   .modal-option .modal-card {
     max-width: 420px;
   }
+}
+
+/* Modal de Reservados */
+.reservado-btn {
+   padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid #eee;
+  background: white;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-reservado {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.img-reservado {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.nome-item {
+  font-weight: 600;
+  color: #333;
+}
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: #8b7d77;
+  line-height: 1.6;
+}
+
+.empty-state p {
+  margin-top: 10px;
+}
+
+.info-reservado {
+  flex: 1;
+}
+
+.acoes-reservado {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.btn-remover {
+  background: transparent;
+  border: none;
+  color: #c0392b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  transition: 0.2s;
+  margin-left: 100px;
+}
+
+.btn-remover:hover {
+  transform: scale(1.2);
 }
 </style>
