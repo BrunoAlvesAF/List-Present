@@ -39,7 +39,7 @@
           Pix
         </button>
         <button class="reservado-btn" @click="abrirReservados">
-         Meus Reservados
+         Itens Reservado
         </button>
       </nav>
 
@@ -1095,9 +1095,10 @@ export default {
 
 /* Modal de Reservados */
 .reservado-btn {
-   padding: 10px 20px;
+  padding: 10px 20px;
   border-radius: 30px;
-  border: 1px solid #eee;
+  border: 1px solid #c5a059;
+  color: #c5a059;
   background: white;
   cursor: pointer;
   transition: 0.3s;
